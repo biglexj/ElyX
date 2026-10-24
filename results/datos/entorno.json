@@ -1,0 +1,32 @@
+{
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "pillow": "12.3.0",
+  "numpy": "2.3.5",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "webp": "1.6.0",
+  "avif": "1.4.2",
+  "magick": "Version: ImageMagick 7.1.2-31 Q16-HDRI x64 fb965f1:20260903 https://imagemagick.org\nCopyright: (C) 1999 ImageMagick Studio LLC\nLicense: https://imagemagick.org/license/\nFeatures: Channel-masks(64-bit) Cipher DPC HDRI Modules OpenCL OpenMP(2.0) \nDelegates (built-in): bzlib cairo freetype gslib heic jng jp2 jpeg jxl lcms lqr lzma openexr pangocairo png ps raqm raw rsvg tiff webp xml zip zlib\nCompiler: Visual Studio 2026 (195136256)\n",
+  "source": "D:\\Imágenes\\Peyto_Lake_original_verificado_20261017_174855.jpg",
+  "source_sha256": "f9f4688c4b89c23f912d1cd3d22289486bfb5d591f4c54280b4a9efdadb4d630",
+  "existing_sha256": "f9f4688c4b89c23f912d1cd3d22289486bfb5d591f4c54280b4a9efdadb4d630",
+  "source_bytes": 21876842,
+  "dimensions": [
+    8192,
+    5464
+  ],
+  "exif": {
+    "296": "2",
+    "34665": "216",
+    "271": "Canon",
+    "272": "Canon EOS R5",
+    "305": "Adobe Photoshop Lightroom Classic 14.4 (Windows)",
+    "306": "2025:10:04 22:57:56",
+    "282": "240.0",
+    "283": "240.0"
+  },
+  "code_sha256": {
+    "elyx_benchmark_8k.py": "03d1680229e3e2b99a6a5d51d4930cd80950e3c1abe79c010a4ca24276bcc8d7",
+    "elyx_affinity_bridge.py": "63118a270452d909a3a4c540d306cbca3bce525f218f1bf868c379123c694143",
+    "elyx_studio_comparador_8k_vs_webp_y_puente_affinity.tsx": "e25310ca6a34b48fa0b1945c206c76fef94ab6176e9924a09c432a3d482e8083"
+  }
+}

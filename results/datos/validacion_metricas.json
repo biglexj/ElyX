@@ -1,0 +1,18 @@
+{
+  "seed": 20261017,
+  "size": [
+    40,
+    300
+  ],
+  "strip_height": 128,
+  "ssim_streaming": 0.997785099781958,
+  "ssim_direct": 0.9977850997819576,
+  "psnr_streaming": 34.38223098583108,
+  "psnr_direct": 34.38223098583108,
+  "identity": {
+    "psnr_rgb_db": null,
+    "ssim_y": 1.0,
+    "mse_rgb": 0.0
+  },
+  "passed": true
+}

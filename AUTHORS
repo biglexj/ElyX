@@ -1,0 +1,15 @@
+# ElyX Authors
+
+## Creator & Lead Developer
+
+- **biglexj** — Codec design, wavelet pipeline, binary container specification,
+  Python/JavaScript implementations, benchmark methodology.
+
+## Photo Credit (Test Asset)
+
+- **Balon Greyjoy** — Canon EOS R5, Peyto Lake (Alberta, Canada), 2025.
+  Source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:20250905_Canon_R5_Peyto_Lake-6145.jpg)
+  License: [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+  Changes: wavelet transform, quantization encoding/decoding. All reconstructed
+  images retain 8192 × 5464 px. Fidelity measured against the decoded JPEG,
+  not the original RAW.

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "elyx"
+version = "0.1.0"
+description = "Experimental standalone wavelet image codec (CDF 5/3 + YCoCg-R)"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "biglexj" }
+]
+keywords = ["image", "codec", "wavelet", "compression", "CDF53", "YCoCg-R"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Multimedia :: Graphics",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.24",
+  "Pillow>=9.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov"]
+
+[project.scripts]
+elyx = "elyx.codec:_cli_main"
+
+[project.urls]
+Homepage = "https://github.com/biglexj/ElyX"
+"Bug Tracker" = "https://github.com/biglexj/ElyX/issues"
+Changelog = "https://github.com/biglexj/ElyX/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

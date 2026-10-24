@@ -1,0 +1,55 @@
+# ElyX — gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Large binary assets (test images — store via Git LFS or external link)
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.tif
+*.avif
+*.webp
+*.jxl
+*.elx
+
+# Keep sample test fixtures (small, checked-in)
+!tests/fixtures/*.png
+!tests/fixtures/*.elx
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Result runs (timestamped output folders)
+ELYX_nativo_*/
+elyx_benchmark_*/
+results/variantes/
+results/inspeccion/
