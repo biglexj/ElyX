@@ -22,6 +22,23 @@ high-density lossy compression for 8K photography.
 
 ---
 
+## Operación con Mise (Estándar Ecosistema)
+
+ElyX implementa la interfaz universal de tareas mediante Mise:
+
+| Tarea | Propósito |
+|---|---|
+| `mise dev` | Ejecutar pruebas unitarias o CLI en desarrollo. |
+| `mise build` | Compilar y verificar sintaxis de código Python sin generar paquetes. |
+| `mise release` | Generar paquetes distribuibles locales (`wheel` y `sdist` en `dist/`) sin publicar. |
+| `mise publish` | Publicar release en GitHub (`--plan` y `--check` sin escritura). |
+
+Opciones de inspección y comprobación:
+- `--plan`: Muestra el comando y las operaciones planificadas sin ejecutar procesos ni modificar el sistema (`mise dev --plan`, `mise release --plan`, `mise publish --plan`).
+- `--check`: (para `publish`) Verifica el estado del repositorio, tags y la presencia e integridad de los artefactos en `dist/` sin publicar nada (`mise publish --check`).
+
+---
+
 ## Quick Start
 
 ### Install
