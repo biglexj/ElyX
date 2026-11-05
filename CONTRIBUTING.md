@@ -12,11 +12,11 @@ Here is how you can help.
 git clone https://github.com/biglexj/ElyX.git
 cd ElyX
 
-# Install Python dependencies
-pip install numpy pillow
+# Prepare the environment (creates .venv and installs ElyX with dev extras)
+mise setup
 
 # Run the test suite
-python -m pytest tests/ -v
+mise test
 ```
 
 ---
@@ -33,7 +33,7 @@ Open a GitHub Issue with:
 1. Fork the repository and create a feature branch.
 2. Keep changes focused — one concern per pull request.
 3. Add or update tests in `tests/` for any changed behaviour.
-4. Run the test suite before submitting (`python -m pytest tests/ -v`).
+4. Run the test suite before submitting (`mise test`).
 5. Open a Pull Request against `main`.
 
 ### Codec / Algorithm Proposals

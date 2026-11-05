@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
@@ -28,20 +28,32 @@ function runCmdSync(cmd: string[], cwd = root): { stdout: string; stderr: string
 
 const appVersion = readTomlVersion(join(root, "pyproject.toml"));
 const appName = "ElyX";
+
+// El intérprete del entorno virtual local tiene prioridad; si no existe, se usa el lanzador del sistema.
+function pythonArgs(args: string[]): string[] {
+    const venv = join(root, ".venv", "Scripts", "python.exe");
+    return existsSync(venv) ? [venv, ...args] : ["py", "-3", ...args];
+}
 const repository = "biglexj/ElyX";
 
-const help = `ElyX: mise <dev|build|release|publish> [opciones]
-  dev      Ejecutar pruebas unitarias o CLI en modo desarrollo.
-  build    Compilar y verificar sintaxis de código fuente Python.
-  release  Generar distribuibles locales (wheel y sdist en dist/).
+const help = `ElyX: mise <setup|dev|build|check|test|release|publish> [opciones]
+  setup    Crear el entorno virtual .venv e instalar ElyX con sus extras de desarrollo.
+  dev      Ejecutar la suite de pruebas en el bucle de desarrollo.
+  build    Generar los paquetes distribuibles (wheel y sdist) en dist/.
+  check    Verificar la sintaxis del código fuente y de las pruebas.
+  test     Ejecutar la suite de pruebas automatizadas.
+  release  Preparar los artefactos de distribución y sus sumas SHA-256 en dist/.
   publish  [github] Publicar release en GitHub.
   --plan   Mostrar los comandos o el plan sin ejecutar acciones ni escribir.
   --check  Para publish: verificar requisitos locales y remotos sin escribir.
 
 Ejemplos:
+  mise setup
   mise dev
   mise dev --plan
   mise build --plan
+  mise check --plan
+  mise test --plan
   mise release --plan
   mise publish --plan
   mise publish --check
@@ -131,31 +143,89 @@ export async function main(args = Bun.argv.slice(2)): Promise<number> {
 
     const isPlan = rest.includes("--plan");
 
+    if (action === "setup") {
+        const cmdCreate = pythonArgs(["-m", "venv", join(root, ".venv")]);
+        const cmdInstall = pythonArgs(["-m", "pip", "install", "-e", ".[dev]"]);
+        console.log(`setup ${appName}\nDirectorio: ${root}\nComando: ${cmdCreate.join(" ")} && ${cmdInstall.join(" ")}`);
+        if (isPlan) return 0;
+
+        console.log("\n==> [1/2] Creando el entorno virtual .venv...");
+        const resCreate = runCmdSync(cmdCreate);
+        if (resCreate.code !== 0) {
+            console.error(resCreate.stderr || resCreate.stdout);
+            throw new Error(`Fallo al crear el entorno virtual (código ${resCreate.code})`);
+        }
+        console.log("==> [2/2] Instalando ElyX con los extras de desarrollo...");
+        const resInstall = runCmdSync(cmdInstall);
+        if (resInstall.code !== 0) {
+            console.error(resInstall.stderr || resInstall.stdout);
+            throw new Error(`Fallo al instalar las dependencias (código ${resInstall.code})`);
+        }
+        return 0;
+    }
+
     if (action === "dev") {
-        const cmd = ["py", "-3", "-m", "pytest"];
+        const cmd = pythonArgs(["-m", "pytest"]);
         console.log(`dev ${appName}\nDirectorio: ${root}\nComando: ${cmd.join(" ")}`);
         if (isPlan) return 0;
         const child = Bun.spawn(cmd, { cwd: root, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
         return (await child.exited) ?? 0;
     }
 
+    if (action === "check") {
+        const cmd = pythonArgs(["-m", "compileall", "-q", "src", "tests"]);
+        console.log(`check ${appName}\nDirectorio: ${root}\nComando: ${cmd.join(" ")}`);
+        if (isPlan) return 0;
+
+        console.log("\n==> Verificando la sintaxis del código Python...");
+        const res = runCmdSync(cmd);
+        if (res.code !== 0) {
+            console.error(res.stderr || res.stdout);
+            throw new Error(`Fallo en la verificación de sintaxis (código ${res.code})`);
+        }
+        return 0;
+    }
+
+    if (action === "test") {
+        const cmd = pythonArgs(["-m", "pytest"]);
+        console.log(`test ${appName}\nDirectorio: ${root}\nComando: ${cmd.join(" ")}`);
+        if (isPlan) return 0;
+        const child = Bun.spawn(cmd, { cwd: root, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
+        return (await child.exited) ?? 0;
+    }
+
     if (action === "build") {
-        const cmd = ["py", "-3", "-m", "compileall", "-q", "src", "tests"];
+        const cmd = pythonArgs(["-m", "build", "--sdist", "--wheel", "--outdir", "dist"]);
         console.log(`build ${appName}\nDirectorio: ${root}\nComando: ${cmd.join(" ")}`);
         if (isPlan) return 0;
 
-        console.log("\n==> Compilando y verificando sintaxis de código Python...");
         const child = Bun.spawn(cmd, { cwd: root, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
         return (await child.exited) ?? 0;
     }
 
     if (action === "release") {
-        const cmd = ["py", "-3", "-m", "build", "--sdist", "--wheel", "--outdir", "dist"];
-        console.log(`release ${appName}\nDirectorio: ${root}\nComando: ${cmd.join(" ")}`);
+        const cmdBuild = pythonArgs(["-m", "build", "--sdist", "--wheel", "--outdir", "dist"]);
+        console.log(`release ${appName}\nDirectorio: ${root}\nComando: ${cmdBuild.join(" ")} + SHA256SUMS.txt`);
         if (isPlan) return 0;
 
-        const child = Bun.spawn(cmd, { cwd: root, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
-        return (await child.exited) ?? 0;
+        const child = Bun.spawn(cmdBuild, { cwd: root, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
+        const code = (await child.exited) ?? 0;
+        if (code !== 0) return code;
+
+        // Preparar los artefactos para su publicación: sumas SHA-256 de cada distribuible.
+        const distDir = join(root, "dist");
+        if (!existsSync(distDir)) {
+            throw new Error("No se encontró dist/ tras la compilación.");
+        }
+        const artifacts = readdirSync(distDir).filter((f) => f.endsWith(".whl") || f.endsWith(".tar.gz"));
+        if (artifacts.length === 0) {
+            throw new Error("No se generaron distribuibles en dist/.");
+        }
+        const sums = artifacts.map((f) => `${sha256(join(distDir, f))}  ${f}`).join("\n") + "\n";
+        writeFileSync(join(distDir, "SHA256SUMS.txt"), sums, "utf-8");
+        console.log(`\n==> Artefactos preparados en dist/: ${artifacts.join(", ")}`);
+        console.log("    SHA256SUMS.txt generado (la publicación remota no se ha ejecutado).");
+        return 0;
     }
 
     throw new Error(`Acción desconocida: ${action}. Usa mise dev, mise build, mise release o mise publish.`);

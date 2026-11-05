@@ -28,9 +28,12 @@ ElyX implementa la interfaz universal de tareas mediante Mise:
 
 | Tarea | Propósito |
 |---|---|
-| `mise dev` | Ejecutar pruebas unitarias o CLI en desarrollo. |
-| `mise build` | Compilar y verificar sintaxis de código Python sin generar paquetes. |
-| `mise release` | Generar paquetes distribuibles locales (`wheel` y `sdist` en `dist/`) sin publicar. |
+| `mise setup` | Crear el entorno virtual `.venv` e instalar ElyX con sus extras de desarrollo. |
+| `mise dev` | Ejecutar la suite de pruebas en el bucle de desarrollo. |
+| `mise build` | Generar los paquetes distribuibles (`wheel` y `sdist`) en `dist/`. |
+| `mise check` | Verificar la sintaxis del código fuente y de las pruebas, sin emitir artefactos. |
+| `mise test` | Ejecutar la suite de pruebas automatizadas. |
+| `mise release` | Preparar los artefactos de distribución y sus sumas SHA-256 en `dist/` sin publicar. |
 | `mise publish` | Publicar release en GitHub (`--plan` y `--check` sin escritura). |
 
 Opciones de inspección y comprobación:

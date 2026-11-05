@@ -1,19 +1,35 @@
 # Configuración de tareas de ElyX mediante Mise
-# Reutiliza el estándar común: dev, build, release, publish
+# Entrada principal de comandos: dev, build, check, test, release, publish
+# Contrato: Docs/global/architecture/mise-command-standard.md
+
+[tasks.setup]
+raw_args = true
+description = "Crear el entorno virtual .venv e instalar ElyX con sus extras de desarrollo"
+file = "scripts/mise-task.ts"
 
 [tasks.dev]
 raw_args = true
-description = "Ejecutar pruebas o CLI de ElyX en desarrollo (Python)"
+description = "Ejecutar la suite de pruebas en el bucle de desarrollo"
 file = "scripts/mise-task.ts"
 
 [tasks.build]
 raw_args = true
-description = "Compilar y verificar sintaxis de Python sin generar paquetes distribuibles"
+description = "Generar los paquetes distribuibles (wheel y sdist) en dist/"
+file = "scripts/mise-task.ts"
+
+[tasks.check]
+raw_args = true
+description = "Verificar la sintaxis del código fuente y de las pruebas sin emitir artefactos"
+file = "scripts/mise-task.ts"
+
+[tasks.test]
+raw_args = true
+description = "Ejecutar la suite de pruebas automatizadas"
 file = "scripts/mise-task.ts"
 
 [tasks.release]
 raw_args = true
-description = "Generar paquetes distribuibles locales (wheel y sdist en dist/) sin publicar"
+description = "Preparar los artefactos de distribución y sus sumas SHA-256 en dist/ sin publicar"
 file = "scripts/mise-task.ts"
 
 [tasks.publish]
